@@ -1,10 +1,4 @@
-# zero-width-lib
-
-[![Travis (.org)](https://img.shields.io/travis/yuanfux/zero-width-lib.svg)](https://img.shields.io/travis/yuanfux/zero-width-lib.svg)
-[![npm](https://img.shields.io/npm/v/zero-width-lib.svg)](https://img.shields.io/npm/v/zero-width-lib.svg)
-[![npm](https://img.shields.io/npm/dt/zero-width-lib.svg)]( https://img.shields.io/npm/dt/zero-width-lib.svg)
-
-
+# zero-width-lib-python
 
 <p align="center">
   <img width="150" height="150" src="https://user-images.githubusercontent.com/6414178/44472944-dd525880-a661-11e8-9c56-3e73395109c3.png">
@@ -22,54 +16,52 @@ The lib is inspired by this great [medium article](https://medium.com/@umpox/be-
 3. ⚡️dependencies & performance considered
 4. 📦support CJS, ESM and UMD
 
+Forked from [this](https://github.com/yuanfux/zero-width-lib) JavaScript implementation. 
 
+**WARNING**: Not 100% compatible with original implementation.
 ## Install
 ```
-npm install zero-width-lib
+pip install zero_width_lib
 ```
 
 ## Usage
->  Besides ESM, CJS and UMD ways of importing are also supported
-```javascript
-// import one method at a time
-import { encode } from 'zero-width-lib';
+```python3
+import zero_width_lib as zwlib
+# or
+from zero_width_lib import *
 ```
-```javascript
-// or import all methods from lib
-import * as z from 'zero-width-lib';
-```
-```javascript
-// note * represents the invisible ZWC
-// U+ represents the Unicode for the character
+```python3
+# note * represents the invisible ZWC
+# U+ represents the Unicode for the character
 
-// 0. six different zwc
-const dict = z.zeroWidthDict;
-console.log(dict.zeroWidthSpace); // '*' U+200B
-console.log(dict.zeroWidthNonJoiner); // '*' U+200C
-console.log(dict.zeroWidthJoiner); // '*' U+200D
-console.log(dict.leftToRightMark); // '*' U+200E
-console.log(dict.rightToLeftMark); // '*' U+200F
-console.log(dict.zeroWidthNoBreakSpace); // '*' U+FEFF
+# 0. six different zwc
+my_dict = zwlib.zeroWidthDict
+print(my_dict.zeroWidthSpace)  # '*' U+200B
+print(my_dict.zeroWidthNonJoiner)  # '*' U+200C
+print(my_dict.zeroWidthJoiner)  # '*' U+200D
+print(my_dict.leftToRightMark) # '*' U+200E
+print(my_dict.rightToLeftMark)  # '*' U+200F
+print(my_dict.zeroWidthNoBreakSpace)  # '*' U+FEFF
 
-// 1. convert text
-const text = 'text';
-const zwc = z.t2z(text); // '********'
-const back = z.z2t(zwc); // 'text'
+# 1. convert text
+text = 'text'
+zwc = zwlib.t2z(text)  # '********'
+back = zwlib.z2t(zwc)  # 'text'
 
-// 2. embed hidden text
-const visble = 'hello world';
-const hidden = 'inspired by @umpox';
-const encoded = z.encode(visible, hidden); // 'h*********ello world'
-const decoded = z.decode(encoded); // 'inpired by @umpox'
+# 2. embed hidden text
+visible = 'hello world'
+hidden = 'transplanted by @shacha086'
+encoded = zwlib.encode(visible, hidden)  # 'h*********ello world'
+decoded = zwlib.decode(encoded)  # 'transplanted by @shacha086'
 
-// 3. extract ZWC from text
-const extracted = z.extract(encoded);
-const vis = extracted.vis; // 'hello world'
-const hid = extracted.hid; // '*********'
+# 3. extract ZWC from text
+extracted = zwlib.extract(encoded)
+vis = extracted.vis  # 'hello world'
+hid = extracted.hid  # '*********'
 
-// 4. escape from string matching
-const forbidden = 'forbidden';
-const escaped = z.split(forbidden); // 'f*o*r*b*i*d*d*e*n*' 
+# 4. escape from string matching
+forbidden = 'forbidden'
+escaped = zwlib.split(forbidden)  # 'f*o*r*b*i*d*d*e*n*' 
 ```
 
 ## License

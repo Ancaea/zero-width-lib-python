@@ -1,35 +1,35 @@
-ZERO_WIDTH_NON_JOINER = '‌'
-ZERO_WIDTH_JOINER = '‍'
-ZERO_WIDTH_SPACE = '​'
-ZERO_WIDTH_NO_BREAK_SPACE = '﻿'
-LEFT_TO_RIGHT_MARK = '‎'
-RIGHT_TO_LEFT_MARK = '‏'
+_ZERO_WIDTH_NON_JOINER = '‌'
+_ZERO_WIDTH_JOINER = '‍'
+_ZERO_WIDTH_SPACE = '​'
+_ZERO_WIDTH_NO_BREAK_SPACE = '﻿'
+_LEFT_TO_RIGHT_MARK = '‎'
+_RIGHT_TO_LEFT_MARK = '‏'
 
 zeroWidthDict = {
-    LEFT_TO_RIGHT_MARK: LEFT_TO_RIGHT_MARK,
-    RIGHT_TO_LEFT_MARK: RIGHT_TO_LEFT_MARK,
-    ZERO_WIDTH_NON_JOINER: ZERO_WIDTH_NON_JOINER,
-    ZERO_WIDTH_JOINER: ZERO_WIDTH_JOINER,
-    ZERO_WIDTH_NO_BREAK_SPACE: ZERO_WIDTH_NO_BREAK_SPACE,
-    ZERO_WIDTH_SPACE: ZERO_WIDTH_SPACE
+    _LEFT_TO_RIGHT_MARK: _LEFT_TO_RIGHT_MARK,
+    _RIGHT_TO_LEFT_MARK: _RIGHT_TO_LEFT_MARK,
+    _ZERO_WIDTH_NON_JOINER: _ZERO_WIDTH_NON_JOINER,
+    _ZERO_WIDTH_JOINER: _ZERO_WIDTH_JOINER,
+    _ZERO_WIDTH_NO_BREAK_SPACE: _ZERO_WIDTH_NO_BREAK_SPACE,
+    _ZERO_WIDTH_SPACE: _ZERO_WIDTH_SPACE
 }
 
-Quinary2ZeroMap: list = list(zeroWidthDict.values())
-Zero2QuinaryMap: dict = {index: values for values, index in enumerate(Quinary2ZeroMap)}
+_Quinary2ZeroMap: list = list(zeroWidthDict.values())
+_Zero2QuinaryMap: dict = {index: values for values, index in enumerate(_Quinary2ZeroMap)}
 
 
-def is_visible(char: str) -> bool:
-    return char not in Zero2QuinaryMap
+def _is_visible(char: str) -> bool:
+    return char not in _Zero2QuinaryMap
 
 
-def find_first_visible(text: str):
+def _find_first_visible(text: str):
     for index, char in enumerate(text):
-        if is_visible(char):
+        if _is_visible(char):
             return index
     return -1
 
 
-def to_any_base(number: int, radix: int) -> str:
+def _to_any_base(number: int, radix: int) -> str:
     digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-={}[]|\\:\";\'<>?,./`~"
     max_radix = len(digits)
     if 2 > radix > max_radix:
@@ -54,9 +54,9 @@ def t2z(t: str) -> str:
     char: str
     for char in list(t):
         base10 = ord(char)
-        base5 = to_any_base(int(base10), 5)
-        zero = ''.join([Quinary2ZeroMap[int(each)] for each in list(base5)])
-        z = z + zero + ZERO_WIDTH_SPACE
+        base5 = _to_any_base(int(base10), 5)
+        zero = ''.join([_Quinary2ZeroMap[int(each)] for each in list(base5)])
+        z = z + zero + _ZERO_WIDTH_SPACE
     return z[:-1]
 
 
@@ -66,8 +66,8 @@ def z2t(z: str) -> str:
         return t
 
     char: str
-    for char in z.split(ZERO_WIDTH_SPACE):
-        base5 = ''.join([str(Zero2QuinaryMap[each]) for each in list(char)])
+    for char in z.split(_ZERO_WIDTH_SPACE):
+        base5 = ''.join([str(_Zero2QuinaryMap[each]) for each in list(char)])
         t += chr(int(base5, 5))
     return t
 
@@ -82,19 +82,19 @@ def encode(visible: str, hidden: str) -> str:
 
 
 def extract(text: str) -> dict[str]:
-    first_visible = find_first_visible(text)
-    second_visible = find_first_visible(text[first_visible + 1:])
+    first_visible = _find_first_visible(text)
+    second_visible = _find_first_visible(text[first_visible + 1:])
     visible = ''
     hidden = ''
 
     for char in text[:second_visible + 1]:
-        if is_visible(char):
+        if _is_visible(char):
             visible += char
         else:
             hidden += char
 
     for char in text[second_visible - 1:]:
-        if is_visible(char):
+        if _is_visible(char):
             visible += char
 
     return {"visible": visible,
@@ -106,9 +106,9 @@ def decode(visible: str) -> str:
 
 
 def split(text: str) -> str:
-    second_visible = find_first_visible(text[1:])
+    second_visible = _find_first_visible(text[1:])
     result = text[:second_visible + 1]
     split_list = text[second_visible + 1:]
     for char in split_list:
-        result += f"{char}{ZERO_WIDTH_SPACE}"
+        result += f"{char}{_ZERO_WIDTH_SPACE}"
     return result
